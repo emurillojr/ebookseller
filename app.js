@@ -25,6 +25,11 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
+//app.get('/success', (req, res) => {
+//    res.render('success');
+//});
+
+
 // Charge Route
 app.post('/charge', (req, res) => {
     const amount = 2500;
