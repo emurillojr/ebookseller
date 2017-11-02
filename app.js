@@ -7,14 +7,14 @@ const app = express();
 
 // Handlebars Middleware
 app.engine('handlebars', exphbs({
-  defaultLayout: 'main'
+    defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
 
 // Body Parser Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: false
+    extended: false
 }));
 
 // Set Static Folder
@@ -22,7 +22,27 @@ app.use(express.static(`${__dirname}/public`));
 
 // Index Route
 app.get('/', (req, res) => {
-  res.render('index');
+    res.render('index');
+});
+
+// Charge Route
+app.post('/charge', (req, res) => {
+    const amount = 2500;
+    // to find out what form sends     //console.log(req.body);     //res.send('TEST');
+
+    // Create a new customer and then a new charge for that customer:
+    stripe.customers.create({
+            email: req.body.stripeEmail,
+            source: req.body.stripeToken
+        })
+        .then(customer => stripe.charges.create({
+            amount,
+            description: 'WebDevelopment Ebook',
+            current: 'usd',
+            customer: customer.id
+        }))
+        .then(charge => res.render('success'));
+
 });
 
 
@@ -30,5 +50,5 @@ app.get('/', (req, res) => {
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+    console.log(`Server started on port ${port}`);
 });
